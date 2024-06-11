@@ -10,6 +10,31 @@ OPENAI_API_KEY = 'YOUR_OPENAI_API_KEY'
 bot = telebot.TeleBot(API_TOKEN)
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
+conn = sqlite3.connect('fitfriend.db')
+cursor = conn.cursor()
+
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS user_profiles (
+    user_id INTEGER PRIMARY KEY,
+    goal TEXT,
+    fitness_level TEXT,
+    age INTEGER,
+    gender TEXT
+)
+''')
+
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS user_progress (
+    user_id INTEGER,
+    progress TEXT,
+    FOREIGN KEY (user_id) REFERENCES user_profiles (user_id)
+)
+''')
+
+conn.commit()
+conn.close()
+
+
 # Inline keyboards
 def main_menu():
     markup = types.InlineKeyboardMarkup()
